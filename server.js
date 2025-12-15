@@ -20,6 +20,21 @@ app.get('/', (req, res) => {
   res.json({ status: 'Bamboo Proxy is running', timestamp: new Date().toISOString() });
 });
 
+// Check outbound IP (for Bamboo whitelist)
+app.get('/my-ip', async (req, res) => {
+  try {
+    const response = await fetch('https://api.ipify.org?format=json');
+    const data = await response.json();
+    res.json({
+      ip: data.ip,
+      message: 'Add this IP to Bamboo whitelist',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'Could not fetch IP' });
+  }
+});
+
 // Proxy endpoint for Bamboo API (supports multiple domains)
 app.all('/bamboo/*', async (req, res) => {
   try {
