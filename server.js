@@ -20,11 +20,13 @@ app.get('/', (req, res) => {
   res.json({ status: 'Bamboo Proxy is running', timestamp: new Date().toISOString() });
 });
 
-// Proxy endpoint for Bamboo API
+// Proxy endpoint for Bamboo API (supports multiple domains)
 app.all('/bamboo/*', async (req, res) => {
   try {
     const bambooPath = req.params[0];
-    const bambooUrl = `https://api.bamboora.com/${bambooPath}`;
+    // Support multiple Bamboo domains via query parameter
+    const domain = req.query.domain || 'api.bamboocardportal.com';
+    const bambooUrl = `https://${domain}/${bambooPath}`;
 
     console.log(`[${new Date().toISOString()}] Proxying: ${req.method} ${bambooUrl}`);
 
